@@ -1,0 +1,12 @@
+worker-threads: 4
+worker-fs-threads: 2
+logger-level: info
+
+is_testing: false
+
+server-port: 8080
+server-ip: 0.0.0.0
+
+service-base-url: "http://localhost:8080"
+
+dbconnection: "postgresql://user:password@postgres-db:5432/urls_db"

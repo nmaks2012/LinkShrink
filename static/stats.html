@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Statistics | LinkShrink</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <a href="/" class="logo">userver <span>LinkShrink</span></a>
+        </div>
+    </header>
+
+    <main>
+        <h1>Click Statistics</h1>
+        <p>Original URL:<br> <strong id="original-url" style="color: var(--accent); font-family: var(--code-font);">Loading...</strong></p>
+        
+        <div id="error-area" class="hidden">
+            <p id="error-message"></p>
+        </div>
+
+        <div class="table-container">
+            <table id="stats-table">
+                <thead>
+                    <tr>
+                        <th>Time</th>
+                        <th>Method</th>
+                        <th>Platform</th> 
+                        <th>Country</th>
+                        <th>IP</th>
+                        <th>Referer</th>
+                        <th>Trace ID</th>
+                    </tr>
+                </thead>
+                <tbody id="stats-tbody">
+                    <!-- Data -->
+                </tbody>
+            </table>
+        </div>
+        
+        <p id="loading-indicator" style="text-align: center; margin-top: 2rem;">Loading data...</p>
+
+        <div class="actions" style="margin-top: 2rem;">
+            <a href="/" class="btn-secondary">← Go Back</a>
+        </div>
+    </main>
+
+    <footer>
+        Powered by <a href="https://userver.tech/" target="_blank">userver framework</a>
+    </footer>
+
+    <script src="/static/script.js"></script>
+</body>
+</html>

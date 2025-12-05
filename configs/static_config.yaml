@@ -1,0 +1,82 @@
+components_manager:
+    task_processors:
+        main-task-processor:
+            worker_threads: $worker-threads
+
+        fs-task-processor:
+            worker_threads: $worker-fs-threads
+
+    default_task_processor: main-task-processor
+
+    components:
+        server:
+            listener:
+                port: $server-port
+                address: $server-ip
+                task_processor: main-task-processor
+
+        logging:
+            fs-task-processor: fs-task-processor
+            loggers:
+                default:
+                    file_path: '@stderr'
+                    level: $logger-level
+                    overflow_behavior: discard
+
+        testsuite-support: {}
+        statistics-accumulator: {}
+
+        http-client:
+            load-enabled: $is-testing
+
+        http-client-core:
+            fs-task-processor: fs-task-processor
+
+        tests-control:
+            load-enabled: $is-testing
+            path: /tests/{action}
+            method: POST
+            task_processor: main-task-processor
+
+        handler-ping:
+            path: /ping
+            method: GET
+            task_processor: main-task-processor
+            throttling_enabled: false
+            url_trailing_slash: strict-match
+
+        handler-shorten-url:
+            path: /shorten
+            method: POST
+            task_processor: main-task-processor
+            base-url: $service-base-url
+
+        handler-redirect:
+            path: /*
+            method: GET
+            task_processor: main-task-processor
+        
+        handler-stats:
+            path: /stats/*
+            method: GET
+            task_processor: main-task-processor
+
+        fs-cache-for-static:
+            dir: /linkshrink-app/static
+
+        handler-static:
+            path: /static/*
+            method: GET
+            task_processor: main-task-processor
+            fs-cache-component: fs-cache-for-static
+
+        postgres-main-db:
+            dbconnection: $dbconnection
+            dbconnection#env: DB_CONNECTION
+            blocking_task_processor: fs-task-processor
+            dns_resolver: async
+            sync-start: true
+            connlimit_mode: manual
+
+        dns-client:
+            fs-task-processor: fs-task-processor

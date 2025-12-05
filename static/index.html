@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LinkShrink | userver demo</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- QR Code Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <a href="/" class="logo">userver <span>LinkShrink</span></a>
+        </div>
+    </header>
+
+    <main>
+        <h1>URL Shortener</h1>
+        <p>Demo service based on the <strong>userver</strong> framework. Uses PostgreSQL, asynchronous drivers, and static typing.</p>
+        
+        <form id="shorten-form">
+            <input type="url" id="url-input" placeholder="Paste long URL here..." required autocomplete="off">
+            <button type="submit" id="submit-button">GO</button>
+        </form>
+
+        <div id="result-area" class="hidden">
+            <div class="result-box">
+                <a href="" id="short-url-link" target="_blank"></a>
+                <div id="qrcode-container"></div>
+            </div>
+            <div class="actions">
+                <button id="copy-button" class="btn-secondary">Copy</button>
+                <a href="" id="stats-link" class="btn-secondary">Statistics</a>
+            </div>
+        </div>
+
+        <div id="error-area" class="hidden">
+            <p id="error-message"></p>
+        </div>
+
+        <!-- History Section -->
+        <div id="history-area" class="hidden" style="margin-top: 3rem; border-top: 1px solid var(--border); padding-top: 1rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                <h2 style="font-size: 1.2rem; margin: 0;">Your Link History</h2>
+                <button id="clear-history-btn" class="btn-secondary" style="font-size: 0.8rem; padding: 0.4rem 0.8rem;">Clear</button>
+            </div>
+            
+            <div class="table-container">
+                <table id="history-table">
+                    <thead>
+                        <tr>
+                            <th>Original</th>
+                            <th>Short URL</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="history-tbody">
+                        <!-- JS will populate this -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        Powered by <a href="https://userver.tech/" target="_blank">userver framework</a>
+    </footer>
+
+    <script src="/static/script.js"></script>
+</body>
+</html>

@@ -1,0 +1,14 @@
+services:
+  linkshrink-app:
+    build:
+      target: builder
+    
+    privileged: true
+    
+    volumes:
+      - .:/linkshrink-app:rw
+      - ./configs:/linkshrink-app/configs:ro
+    
+    working_dir: /linkshrink-app
+
+    command: ["/bin/sh", "-c", "while sleep 1000; do :; done"]

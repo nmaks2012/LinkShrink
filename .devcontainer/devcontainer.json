@@ -1,0 +1,47 @@
+{
+    "name": "LinkShrink Dev Container",
+
+    "dockerComposeFile": [
+        "../docker-compose.yml",
+        "../docker-compose.dev.yml"
+    ],
+
+    "service": "linkshrink-app",
+
+    "workspaceFolder": "/linkshrink-app",
+
+    "runArgs": [
+        "--cap-add=SYS_PTRACE",
+        "--security-opt",
+        "seccomp=unconfined"
+    ],
+
+    "remoteUser": "user",
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "ms-vscode.cpptools",
+                "ms-vscode.cmake-tools",
+                "ms-azuretools.vscode-docker",
+                "vadimcn.vscode-lldb",
+                "llvm-vs-code-extensions.vscode-clangd",
+                "ms-python.python",
+                "matepek.vscode-catch2-test-adapter"
+            ],
+
+            "settings": {
+                "C_Cpp.default.compileCommands": "${workspaceFolder}/build/debug/compile_commands.json",
+                "cmake.configureOnOpen": true,
+                "terminal.integrated.defaultProfile.linux": "bash",
+                "clangd.arguments": [
+                    "--compile-commands-dir=${workspaceFolder}/build/debug"
+                ],
+                "testMate.cpp.test.executables": "{build,Build,BUILD,out,Out,OUT,Debug,Release}/**/*{test,Test,TEST,benchmark,Benchmark}*"
+            }
+        }
+    },
+
+    "onCreateCommand": "git config --global --add safe.directory /linkshrink-app",
+
+    "forwardPorts": [8080, 8081]
+}
