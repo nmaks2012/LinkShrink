@@ -4,6 +4,12 @@ project(linkshrink-app CXX)
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 include(DownloadUserver)
 
+
+find_package(
+    prometheus-cpp 
+    REQUIRED
+)
+
 find_package(
     userver
     COMPONENTS postgresql
@@ -37,9 +43,15 @@ target_link_libraries(${PROJECT_NAME}_objs PUBLIC
 
 
 # The Service
-add_executable(${PROJECT_NAME} src/main.cpp)
-target_link_libraries(${PROJECT_NAME} PRIVATE ${PROJECT_NAME}_objs)
+add_executable(${PROJECT_NAME} 
+    src/main.cpp 
+    src/prometheus_metrics.cpp
+    src/handlers/prometheus_handler.cpp
+)
 
+target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
+
+target_link_libraries(${PROJECT_NAME} PRIVATE ${PROJECT_NAME}_objs prometheus-cpp)
 
 # Unit Tests
 add_executable(${PROJECT_NAME}_unittest
