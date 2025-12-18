@@ -162,6 +162,30 @@ Retrieves click statistics for a specific link.
 }
 ```
 
+## Monitoring (Prometheus)
+
+The service provides real-time metrics in Prometheus format at the `/metrics` endpoint.
+
+### Available Metrics
+
+*   **`linkshrink_urls_created_total`**: Total number of short URLs generated.
+*   **`linkshrink_redirects_total`**: Total number of successful redirections.
+*   **`linkshrink_db_latency`**: Histogram of database query execution times.
+
+### Scraping Metrics
+
+To collect metrics, add the following job to your `prometheus.yml` configuration:
+
+```yaml
+scrape_configs:
+  - job_name: 'linkshrink'
+    metrics_path: '/metrics'
+    static_configs:
+      - targets: ['localhost:8080']
+```
+
+The metrics are served using the `prometheus-cpp` library and are available separately from the main userver component lifecycle.
+
 ## Database Schema
 
 The database consists of two main tables:
