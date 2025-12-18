@@ -23,7 +23,7 @@
 #include "storage/statistics_accumulator.hpp"
 
 int main(int argc, char* argv[]) {
-  prometheus::Registry& registry = CreateCustomMetrics();
+  prometheus::Registry& registry = CreatePrometheusMetrics();
 
   userver::server::http::HttpServer server;
 
@@ -32,8 +32,6 @@ int main(int argc, char* argv[]) {
   server.Start();
   std::cout << "Server running. Prometheus can scrape metrics from /metrics"
             << std::endl;
-
-  userver::engine::Run();
 
   auto component_list =
       userver::components::MinimalServerComponentList()

@@ -2,6 +2,7 @@
 
 #include <functional>
 #include <string>
+#include <chrono>
 #include <userver/cache/expirable_lru_cache.hpp>
 #include <userver/cache/lru_cache_config.hpp>
 #include <userver/components/component_context.hpp>
@@ -10,6 +11,7 @@
 #include <userver/tracing/span.hpp>
 
 #include "../models/click_info.hpp"
+#include "prometheus_metrics.hpp"
 
 namespace linkshrink::handlers {
 
@@ -83,6 +85,10 @@ std::string RedirectHandler::HandleRequestThrow(
   /// accumulate
   stats_accumulator_.PushBack(click);
 
+  if (linkshrink_redirects_total) {
+    linkshrink_redirects_total->Increment();
+  }
+
   auto& response = request.GetHttpResponse();
   response.SetStatus(userver::server::http::HttpStatus::kFound);
   response.SetHeader(std::string_view{"Location"}, url_info.original_url);
@@ -91,9 +97,16 @@ std::string RedirectHandler::HandleRequestThrow(
 }
 
 UrlInfo RedirectHandler::UpdateCache(const std::string& key) const {
+  auto start = std::chrono::steady_clock::now();
   const auto result = pg_cluster_->Execute(
       userver::storages::postgres::ClusterHostType::kMaster,
       "SELECT id, original_url FROM urls WHERE short_code = $1", key);
+  auto end = std::chrono::steady_clock::now();
+  if (linkshrink_db_latency) {
+    linkshrink_db_latency->Observe(
+        std::chrono::duration<double>(end - start).count());
+  }
+
   return result.AsSingleRow<UrlInfo>(userver::storages::postgres::kRowTag);
 }
 

@@ -1,12 +1,15 @@
 #include "shorten.hpp"
 
 #include <string>
+#include <chrono>
 #include <userver/components/component_config.hpp>
 #include <userver/components/component_context.hpp>
 #include <userver/formats/json/value.hpp>
 #include <userver/storages/postgres/component.hpp>
 #include <userver/storages/postgres/result_set.hpp>
 #include <userver/utils/rand.hpp>
+
+#include "prometheus_metrics.hpp"
 
 namespace linkshrink::handlers {
 
@@ -47,13 +50,22 @@ std::string ShortenUrlHandler::HandleRequestThrow(
     const auto short_code =
         linkshrink::utils::GenerateShortCode(kShortCodeLength);
     try {
+      auto start = std::chrono::steady_clock::now();
       auto res = trx.Execute(
           "INSERT INTO urls (original_url, short_code) VALUES ($1, $2) "
           "RETURNING short_code",
           original_url, short_code);
+      auto end = std::chrono::steady_clock::now();
+      if (linkshrink_db_latency) {
+        linkshrink_db_latency->Observe(
+            std::chrono::duration<double>(end - start).count());
+      }
 
       successful_code = res.AsSingleRow<std::string>();
 
+      if (linkshrink_urls_created_total) {
+        linkshrink_urls_created_total->Increment();
+      }
       break;
 
     } catch (const userver::storages::postgres::UniqueViolation& e) {
